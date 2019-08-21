@@ -2,22 +2,29 @@
 
 namespace HeatMap;
 
+require_once("heatmap_config.php");  // $heatmap_config_default
+require_once("Image.php");
+
 class HeatMap {
-    private $data;
-    private $width;
-    private $height;
-    private $image = NULL;
+    private $_data;
+    private $_config;
 
-    public function __construct(array $data = array(), $width = 500, $height = 500) {
-        $this->data = $data;
-        $this->width = $width;
-        $this->height = $height;
+    private $_width;
+    private $_height;
+    private $_image = NULL;
 
-        $this->setupImage();
-        $this->calibrate();
+    public function __construct(array $data = array(), $width = 500, $height = 500, $config = array()) {
+        $this->_data = $data;
+        $this->_config = $config;
+
+        $this->_width = $width;
+        $this->_height = $height;
+
+        $this->_createImage();
+        $this->_calibrate();
     }
 
-    public function getImage() { return $this->image(); }
+    public function getImage() { return $this->_image(); }
 
     public function setData($data) {}
     public function setWidth($width) {}
@@ -30,12 +37,11 @@ class HeatMap {
 
     private function isValidArray() {}
 
-    private function setupImage() {
-        $this->image = imagecreatetruecolor($this->width, $this->height)
-                           or die("Unable to initialize new image.");
+    private function _createImage() {
+        $this->image = new Image($this->_width, $this->_height);
     }
 
-    private function calibrate() {}
+    private function _calibrate() {}
 }
 
 ?>
