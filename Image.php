@@ -20,6 +20,8 @@ class Image {
     public function setWidth($width) {}
     public function setHeight($height) {}
 
+    public function setFont($font) {}
+
     private function _setupImage() {
         $this->_image = imagecreatetruecolor($this->_width, $this->_height)
                            or die("Unable to initialize new image.");
