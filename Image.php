@@ -22,6 +22,8 @@ class Image {
 
     public function setFont($font) {}
 
+    public function reDraw() {}
+
     private function _setupImage() {
         $this->_image = imagecreatetruecolor($this->_width, $this->_height)
                            or die("Unable to initialize new image.");
