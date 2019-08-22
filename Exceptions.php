@@ -12,8 +12,12 @@ class HeatMapException extends \Exception {
     }
 }
 
+// Classes for Bad Axis data
 class EmptyAxisException extends HeatMapException {}
 class InvalidDimensionsException extends HeatMapException {}
+
+// Classes for Bad Config information
+class InvalidColorscaleException extends HeatMapException {}
 
 }
 

@@ -120,6 +120,8 @@ class HeatMap {
 
     private function _drawData($data_width, $data_height, $starting_x, $starting_y) {
         $colorscale = $this->_config["colorscale"];
+        if (gettype($colorscale) !== "ColorMap")
+            throw new InvalidColorscaleException("The colorscale you have inputted or changed must be of type \"ColorMap\".");
 
         // Define the number of x quadrants we have and the width of each one
         $num_x = count($this->_zaxis);
@@ -184,6 +186,8 @@ class HeatMap {
 
         return $this->_image->createColor(255, 255, 255);
     }
+
+    private function _manageConfig()
 }
 
 } // End of HeatMap namespace
