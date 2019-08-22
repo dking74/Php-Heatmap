@@ -28,6 +28,10 @@ class Image {
 
     public function redraw() {}
 
+    public function createColor($R, $G, $B) { 
+        return imagecolorallocate($this->_image, $R, $G, $B);
+    }
+
     public function drawLine($x1, $y1, $x2, $y2, $color) {
         imageline($this->_image, $x1, $y1, $x2, $y2, $color);
     }

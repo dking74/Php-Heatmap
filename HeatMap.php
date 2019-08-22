@@ -100,8 +100,19 @@ class HeatMap {
         $this->_image->drawLine($x0, $height + $y0, $x0, $y0, $black);
     }
 
-    private function _mapDataToBorder($data_value) {
-        
+    private function _drawData() {
+        $num_x = count($this->_zaxis);
+        $x_width = $this->_width / $num_x;
+
+        foreach($this->_zaxis as $x_num => $x_data) {
+            foreach($x_data as $data_num => $data_point) {
+                $this->_mapDataToBorder($x0, $y0, $x1, $y1, $data_point);
+            }
+        }
+    }
+
+    private function _mapDataToBorder($x0, $y0, $x1, $y1, $data_value) {
+        $this->_image->drawRectangle($x0, $y0, $x1, $y1, $color);
     }
 }
 
