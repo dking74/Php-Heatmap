@@ -16,7 +16,7 @@ class Image {
     }
 
     public function destroyImage() {
-        imagedestroy($this->_image);
+        if ($this->_image !== NULL) imagedestroy($this->_image);
     }
 
     public function getImage() { return $this->_image; }

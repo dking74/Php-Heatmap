@@ -7,8 +7,8 @@ class Color {
     public $blue;
 
     public function __construct($red, $green, $blue) {
-        $this->$red   = $red;
-        $this->$green = $green;
+        $this->red   = $red;
+        $this->green = $green;
         $this->blue   = $blue;
     }
 }
@@ -26,21 +26,21 @@ class ColorMap {
 }
 
 class ColorScale {
-    public static $BGR;
+    public static $RGB;
 }
 
 // Define ColorScales static member variables
-ColorScale::$BGR = array(
-    new ColorMap(0,    1.00, new Color(0,   0,   255)),
-    new ColorMap(1.00, 2.00, new Color(0,   85,  255)),
-    new ColorMap(2.00, 3.00, new Color(0,   170, 255)),
-    new ColorMap(3.00, 4.00, new Color(0,   255, 255)),
-    new ColorMap(4.00, 5.00, new Color(0,   255, 170)),
-    new ColorMap(5.00, 6.00, new Color(170, 255, 0  )),
-    new ColorMap(6.00, 7.00, new Color(255, 255, 0  )),
-    new ColorMap(7.00, 8.00, new Color(255, 170, 0  )),
-    new ColorMap(8.00, 9.00, new Color(255, 85,  0  )),
-    new ColorMap(9.00, 10.0, new Color(255, 0,   0  )) 
+ColorScale::$RGB = array(
+    new ColorMap(0,     10.00, new Color(255, 0,   0  )),
+    new ColorMap(10.01, 20.00, new Color(255, 85,  0  )),
+    new ColorMap(20.01, 30.00, new Color(255, 170, 0  )),
+    new ColorMap(30.01, 40.00, new Color(255, 255, 0  )),
+    new ColorMap(40.01, 50.00, new Color(170, 255, 0  )),
+    new ColorMap(50.01, 60.00, new Color(0,   255, 170)),
+    new ColorMap(60.01, 70.00, new Color(0,   255, 255)),
+    new ColorMap(70.01, 80.00, new Color(0,   170, 255)),
+    new ColorMap(80.01, 90.00, new Color(0,   85,  255)),
+    new ColorMap(90.01, 100.0, new Color(0,   0,   255)) 
 );
 
 } // End of HeatMap namespace

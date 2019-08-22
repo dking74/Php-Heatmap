@@ -1,7 +1,7 @@
 <?php
 namespace HeatMap {
 
-require_once("colors.php");
+require_once("Colors.php");
 
 $heatmap_config_default = array(
     // Minimum and maximum values for data values
@@ -9,7 +9,7 @@ $heatmap_config_default = array(
     "max_value" => 100,
 
     // Color choice for values on map
-    "colorscale" => ColorScale::$BGR
+    "colorscale" => ColorScale::$RGB
 );
 
 } // End of HeatMap namespace
