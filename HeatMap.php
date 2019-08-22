@@ -187,7 +187,10 @@ class HeatMap {
         return $this->_image->createColor(255, 255, 255);
     }
 
-    private function _manageConfig()
+    private function _manageConfig() {
+        $manager = HeatmapConfigManager($this);
+        $manager->manage($this->_config);
+    }
 }
 
 } // End of HeatMap namespace

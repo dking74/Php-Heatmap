@@ -7,6 +7,14 @@ class ConfigManager {
     }
 }
 
+class HeatmapConfigManager {
+    public function __construct($heatmap_instance) {
+        $this->_heatmap = $heatmap_instance;
+    }
+
+    public function manage($config) {}
+}
+
 }
 
 ?>
