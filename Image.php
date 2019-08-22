@@ -1,5 +1,5 @@
 <?php
-namespace HeatMap;
+namespace HeatMap {
 
 require_once("image_config.php");
 
@@ -15,19 +15,37 @@ class Image {
         $this->_setupImage();
     }
 
-    public function getImage() { return $this->_image(); }
+    public function destroyImage() {
+        imagedestroy($this->_image);
+    }
+
+    public function getImage() { return $this->_image; }
 
     public function setWidth($width) {}
     public function setHeight($height) {}
 
     public function setFont($font) {}
 
-    public function reDraw() {}
+    public function redraw() {}
+
+    public function drawLine($x1, $y1, $x2, $y2, $color) {
+        imageline($this->_image, $x1, $y1, $x2, $y2, $color);
+    }
+
+    public function drawRectangle($x1, $y1, $x2, $y2, $color) {
+        imagefilledrectangle($this->_image, $x1, $y1, $x2, $y2, $color);
+    }
+
+    public function saveToPNG($filename) {
+        imagepng($this->_image, $filename);
+    }
 
     private function _setupImage() {
         $this->_image = imagecreatetruecolor($this->_width, $this->_height)
                            or die("Unable to initialize new image.");
     }
 }
+
+} // End of HeatMap namespace
 
 ?>

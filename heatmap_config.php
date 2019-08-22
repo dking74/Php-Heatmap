@@ -1,5 +1,5 @@
 <?php
-namespace HeatMap;
+namespace HeatMap {
 
 require_once("colors.php");
 
@@ -11,5 +11,7 @@ $heatmap_config_default = array(
     // Color choice for values on map
     "colorscale" => ColorScale::$BGR
 );
+
+} // End of HeatMap namespace
 
 ?>
