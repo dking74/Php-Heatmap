@@ -18,6 +18,7 @@ class InvalidDimensionsException extends HeatMapException {}
 
 // Classes for Bad Config information
 class InvalidColorscaleException extends HeatMapException {}
+class InsufficientSizeException extends HeatMapException {}
 
 }
 

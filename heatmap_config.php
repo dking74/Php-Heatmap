@@ -9,7 +9,12 @@ $heatmap_config_default = array(
     "max_value" => 100,
 
     // Color choice for values on map
-    "colorscale" => ColorScale::$RGB
+    "colorscale" => ColorScale::$RGB,
+
+    // Axis and title information
+    "title"         => "",
+    "titlefontsize" => 13,
+    "titleangle"    => 0
 );
 
 } // End of HeatMap namespace

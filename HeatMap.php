@@ -16,10 +16,11 @@ class HeatMap {
 
     private $_width;
     private $_height;
+    private $_border;
 
     private $_image = NULL;
 
-    public function __construct($x_axis, $z_axis, $y_axis = array(), $width = 500, $height = 500, $config = array()) {
+    public function __construct($x_axis, $z_axis, $y_axis = array(), $width = 600, $height = 600, $config = array()) {
         $this->_width = $width;
         $this->_height = $height;
 
@@ -30,7 +31,7 @@ class HeatMap {
         $this->_yaxis = $y_axis;
         $this->_zaxis = $z_axis;
 
-        // Make sure axes are correct, and end construction if so
+        // Make sure axes are correct, and end construction if not
         $this->_checkValidData();
 
         // After check of axes, we can create the image.
@@ -42,14 +43,21 @@ class HeatMap {
         $this->_image->destroyImage();
     }
 
-    public function getImage() { return $this->_image; }
+    /**
+     * Public getter functions for individual private members
+     */
+    public function getConfig() { return $this->_config; }
+    public function getImage()  { return $this->_image;  }
+    public function getBorder() { return $this->_border; }
+    public function getWidth()  { return $this->_width;  }
+    public function getHeight() { return $this->_height; }
 
+    /**
+     * Public setter functions for changing private members
+     */
     public function setData($data) {}
-
     public function setWidth($width) {}
     public function setHeight($height) {}
-
-    public function addData($data) {}
 
     public function saveAsImage($filename, $type = 'png') {
         $this->_image->saveToPNG($filename);
@@ -68,6 +76,11 @@ class HeatMap {
                     "Please ensure the z-axis is a 2-dimensional array with the number of sub-arrays matching the number of ".
                     "items in the x-axis.");
         }
+
+        if ($this->_width < 600 || $this->_height < 400) {
+            throw new InsufficientSizeException(
+                    "Either the width or height entered is too small to plot. Please have each one at or above 600px.");
+        }
     }
 
     private function _createImage() {
@@ -75,7 +88,7 @@ class HeatMap {
 
         // Make background color white
         $white = imagecolorallocate($this->_image->getImage(), 255, 255, 255);
-        $this->_image->drawRectangle(0, 0, $this->_width, $this->_height, $white);
+        $this->_image->drawFilledRectangle(0, 0, $this->_width, $this->_height, $white);
     }
 
     private function _destroyImage() {
@@ -89,6 +102,11 @@ class HeatMap {
         $this->_destroyImage();
         $this->_createImage();
 
+        // Get the colorscale we are operating on; throw exception if no proper one found
+        $colorscale = $this->_config["colorscale"];
+        if (gettype($colorscale) !== "array" && gettype($colorscale[0]) !== "ColorMap")
+            throw new InvalidColorscaleException("The colorscale you have inputted or changed must be of type \"ColorMap\".");
+
         // Define parameters for data contained inside heatmap
         $width  = $this->_width * 11 / 15;
         $height = $this->_height * 2 / 3;
@@ -96,16 +114,22 @@ class HeatMap {
         $starting_y = ($this->_height - $height) / 2;
 
         // Draw the data for heatmap, and then its border
-        $this->_drawData($width, $height, $starting_x, $starting_y + $height);
+        $this->_drawData($colorscale, $width, $height, $starting_x, $starting_y + $height);
         $this->_drawBorder($width, $height, $starting_x, $starting_y);
+
+        $this->_addColorScale($colorscale, $starting_x + $width + 50, $starting_y + $height, $height);
+        $this->_manageConfig();
     }
 
     private function _drawBorder($width, $height, $x0, $y0) {
         $black = $this->_image->createColor(0, 0, 0);
-        $this->_image->drawLine($x0, $y0, $width + $x0, $y0, $black);
-        $this->_image->drawLine($width + $x0, $y0, $width + $x0, $height + $y0, $black);
-        $this->_image->drawLine($width + $x0, $height + $y0, $x0, $height + $y0, $black);
-        $this->_image->drawLine($x0, $height + $y0, $x0, $y0, $black);
+        $this->_image->drawOutlinedRectangle($x0, $y0, $width + $x0, $height + $y0, $black);
+
+        // Save the border points so that we make adjustments within config
+        // based on these locations that we saved
+        $this->_border = array(
+                array("x" => $x0, "y" => $y0),
+                array("x" => $width + $x0, "y" => $height + $y0));
     }
 
     private function _drawDataSeparators($num_x, $starting_x, $x_width, $starting_y, $data_height) {
@@ -118,11 +142,7 @@ class HeatMap {
         }
     }
 
-    private function _drawData($data_width, $data_height, $starting_x, $starting_y) {
-        $colorscale = $this->_config["colorscale"];
-        if (gettype($colorscale) !== "ColorMap")
-            throw new InvalidColorscaleException("The colorscale you have inputted or changed must be of type \"ColorMap\".");
-
+    private function _drawData($colorscale, $data_width, $data_height, $starting_x, $starting_y) {
         // Define the number of x quadrants we have and the width of each one
         $num_x = count($this->_zaxis);
         $x_width = $data_width / $num_x;
@@ -156,12 +176,12 @@ class HeatMap {
             $current_y = $starting_y; 
         }
 
-        $this->_drawDataSeparators($num_x, $starting_x, $x_width, $starting_y, $data_height);        
+        $this->_drawDataSeparators($num_x, $starting_x, $x_width, $starting_y, $data_height);
     }
 
     private function _mapDataToBorder($x0, $y0, $x1, $y1, $data_value, $colorscale) {
         $color = $this->_getDataColor($colorscale, $data_value);
-        $this->_image->drawRectangle($x0, $y0, $x1, $y1, $color);
+        $this->_image->drawFilledRectangle($x0, $y0, $x1, $y1, $color);
     }
 
     private function _getDataColorMap($colorscale, $data_value) {
@@ -187,9 +207,34 @@ class HeatMap {
         return $this->_image->createColor(255, 255, 255);
     }
 
+    private function _addColorScale($colorscale, $x_data_edge, $y_data_edge, $data_height) {
+        $num_colors = count($colorscale);
+        $each_height_color = $data_height / $num_colors;
+
+        $current_y = $y_data_edge;
+        foreach ($colorscale as $color_num => $colormap) {
+            $low_val  = $colormap->low;
+            $high_val = $colormap->high;
+            $red      = $colormap->color->red;
+            $green    = $colormap->color->green;
+            $blue     = $colormap->color->blue;
+
+            $color = $this->_image->createColor($red, $green, $blue);
+            $this->_image->drawFilledRectangle(
+                          $x_data_edge, 
+                          $current_y,
+                          $x_data_edge + 30,
+                          $current_y - $each_height_color,
+                          $color);
+            
+            $current_y -= $each_height_color;
+            $this->_image->drawText($high_val, $x_data_edge - 20, $current_y + 10, 0, 10);
+        }
+    }
+
     private function _manageConfig() {
-        $manager = HeatmapConfigManager($this);
-        $manager->manage($this->_config);
+        $manager = new HeatmapConfigManager($this);
+        $manager->manage();
     }
 }
 
