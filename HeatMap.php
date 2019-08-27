@@ -20,7 +20,7 @@ class HeatMap {
 
     private $_image = NULL;
 
-    public function __construct($x_axis, $z_axis, $y_axis = array(), $width = 600, $height = 600, $config = array()) {
+    public function __construct($x_axis, $z_axis, $y_axis = array(), $width = 700, $height = 500, $config = array()) {
         $this->_width = $width;
         $this->_height = $height;
 
@@ -55,16 +55,27 @@ class HeatMap {
     /**
      * Public setter functions for changing private members
      */
-    public function setData($data) {}
-    public function setWidth($width) {}
-    public function setHeight($height) {}
+    public function setXaxis($x_axis)  { $this->_zaxis  = $x_axis; $this->_checkValidData(); $this->_calibrate(); }
+    public function setYaxis($y_axis)  { $this->_yaxis  = $y_axis; $this->_checkValidData(); $this->_calibrate(); }
+    public function setZaxis($z_axis)  { $this->_zaxis  = $z_axis; $this->_checkValidData(); $this->_calibrate(); }
+    public function setWidth($width)   { $this->_width  = $width;  $this->_checkValidData(); $this->_calibrate(); }
+    public function setHeight($height) { $this->_height = $height; $this->_checkValidData(); $this->_calibrate(); }
+    public function setConfig($config) {
+        global $heatmap_config_default;
+        $this->_config = ConfigManager::merge($heatmap_config_default, $config);
+
+        $this->_calibrate();
+    }
 
     public function saveAsImage($filename, $type = 'png') {
         $this->_image->saveToPNG($filename);
     }
 
-    public function writeToBrowser() {}
-
+    /**
+     * Private functions used for internal configuration.
+     *
+     * DO NOT ATTEMPT TO USE FUNCTIONS DIRECTLY ON INSTANCE
+     */
     private function _checkValidData() {
         if (count($this->_xaxis) <= 0 || count($this->_zaxis) <= 0 || count($this->_zaxis[0]) <= 0) {
             throw new EmptyAxisException("One of your axis does not have data. Please make sure you enter valid axes for HeatMap construction.");
@@ -108,8 +119,8 @@ class HeatMap {
             throw new InvalidColorscaleException("The colorscale you have inputted or changed must be of type \"ColorMap\".");
 
         // Define parameters for data contained inside heatmap
-        $width  = $this->_width * 11 / 15;
-        $height = $this->_height * 2 / 3;
+        $width  = $this->_width * 4 / 5;
+        $height = $this->_height * 4 / 5;
         $starting_x = ($this->_width - $width) / 2;
         $starting_y = ($this->_height - $height) / 2;
 
