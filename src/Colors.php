@@ -26,7 +26,7 @@ class ColorMap {
 }
 
 class ColorScale {
-    public static $RGB;
+    /** @var Array $RGB */ public static $RGB;
 }
 
 // Define ColorScales static member variables

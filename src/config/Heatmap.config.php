@@ -1,7 +1,7 @@
 <?php
 namespace HeatMap {
 
-require_once("Colors.php");
+require_once("../Colors.php");
 
 $heatmap_config_default = array(
     // Minimum and maximum values for data values
@@ -14,7 +14,10 @@ $heatmap_config_default = array(
     // Axis and title information
     "title"         => "",
     "titlefontsize" => 13,
-    "titleangle"    => 0
+    "titleangle"    => 0,
+
+    "useSeparators" => true,
+    "useColorMap"   => true,
 );
 
 } // End of HeatMap namespace

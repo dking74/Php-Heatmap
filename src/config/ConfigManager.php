@@ -8,23 +8,23 @@ class ConfigManager {
 }
 
 class HeatmapConfigManager {
-    private $_heatmap;
+    /** @var \HeatMap\HeatMap $heatmap*/ private $heatmap;
 
     public function __construct($heatmap_instance) {
-        $this->_heatmap = $heatmap_instance;
+        $this->heatmap = $heatmap_instance;
     }
 
     public function manage() {
         // Get the config file from the heatmap and add appropriate options
-        $config = $this->_heatmap->getConfig();
+        $config = $this->heatmap->getConfig();
         if (array_key_exists("title", $config))
-            $this->_addTitle($config["title"], $config["titlefontsize"], $config["titleangle"]);
+            $this->addTitle($config["title"], $config["titlefontsize"], $config["titleangle"]);
         
     }
 
-    private function _addTitle($title_name, $font_size, $angle) {
+    private function addTitle($title_name, $font_size, $angle) {
         // Get the border parameters necessary to draw title
-        $heat_border  = $this->_heatmap->getBorder();
+        $heat_border  = $this->heatmap->getBorder();
         $upper_x      = $heat_border[0]["x"];
         $upper_y      = $heat_border[0]["y"];
         $lower_x      = $heat_border[1]["x"];

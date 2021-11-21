@@ -18,7 +18,7 @@ class Image {
         $this->_font = __DIR__."/fonts/arial.ttf";
 
         $this->_image = imagecreatetruecolor($this->_width, $this->_height)
-                           or die("Unable to initialize new image.");
+            or die("Unable to initialize new image.");
     }
 
     public function destroyImage() {
@@ -73,6 +73,15 @@ class Image {
 
     public function drawFilledRectangle($x1, $y1, $x2, $y2, $color) {
         return imagefilledrectangle($this->_image, $x1, $y1, $x2, $y2, $color);
+    }
+
+    public function save($filename, $type = 'png') {
+        switch ($type) {
+            case 'png':
+            case 'PNG':
+                $this->saveToPNG($filename);
+                break;
+        }
     }
 
     public function saveToPNG($filename) {
