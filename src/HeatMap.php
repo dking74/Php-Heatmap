@@ -27,12 +27,12 @@ class HeatMap {
         $x_axis,
         $z_axis,
         $y_axis = array(),
-        $width = 700,
-        $height = 500,
         $config = array()
     ) {
-        $this->_width = $width;
-        $this->_height = $height;
+        $this->mergeGlobalConfig($config);
+
+        $this->_width = $this->_config['width'] or 700;
+        $this->_height = $this->_config['height'] or 500;
 
         $this->_xaxis = $x_axis;
         $this->_yaxis = $y_axis;
@@ -42,9 +42,8 @@ class HeatMap {
         $this->checkValidData();
 
         // After check of axes, we can create the image.
-        // Go ahead and create the image and calibrate accordingly
+        // Go ahead and create the image and calibrate accordingly.
         $this->calibrate();
-        $this->setConfig($config);
     }
 
     public function __destruct() {
@@ -66,12 +65,26 @@ class HeatMap {
     public function setXaxis($x_axis)  { $this->_zaxis  = $x_axis; $this->checkValidData(); $this->calibrate(); }
     public function setYaxis($y_axis)  { $this->_yaxis  = $y_axis; $this->checkValidData(); $this->calibrate(); }
     public function setZaxis($z_axis)  { $this->_zaxis  = $z_axis; $this->checkValidData(); $this->calibrate(); }
-    public function setWidth($width)   { $this->_width  = $width;  $this->checkValidData(); $this->calibrate(); }
-    public function setHeight($height) { $this->_height = $height; $this->checkValidData(); $this->calibrate(); }
-    public function setConfig($config) {
-        global $heatmap_config_default;
-        $this->_config = ConfigManager::merge($heatmap_config_default, $config);
+    public function setWidth($width) {
+        $this->_width  = $width;
+        $this->checkValidData();
 
+        // The individual with has already been adjusted, but keep
+        // up-to-date with the current config as well.
+        $this->_config['width'] = $width;
+        $this->calibrate();
+    }
+    public function setHeight($height) {
+        $this->_height = $height;
+        $this->checkValidData();
+
+        // The individual height has already been adjusted, but keep
+        // up-to-date with the current config as well.
+        $this->_config['height'] = $height;
+        $this->calibrate();
+    }
+    public function setConfig($config) {
+        $this->mergeGlobalConfig($config);
         $this->calibrate();
     }
 
@@ -83,6 +96,18 @@ class HeatMap {
      */
     public function saveAsImage($filename, $type = 'png') {
         $this->_image->save($filename, $type);
+    }
+
+    /**
+     * Merge the global config with locally entered config. Set
+     * the internal config instance with merged value.
+     * @internal
+     * 
+     * @param Array $config The config to merge with global instance.
+     */
+    private function mergeGlobalConfig($config) {
+        global $heatmap_config_default;
+        $this->_config = ConfigManager::merge($heatmap_config_default, $config);
     }
 
     /**
